@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://moqui.org/xsd/service-definition-2.1.xsd">
+    <!-- Service acts on entity based on Noun that matches Entity name -->
+    <service verb="donate" noun="Donation" type="inline">
+        <in-parameters>
+            <auto-parameters include="all"/>
+             <parameter name="donationId" required="true"/>
+             <parameter name="name" required="true"/>
+             <parameter name="email" required="true"/>
+             <parameter name="phone" required="true"/>
+             <parameter name="donationAmount" required="true"/>
+             <parameter name="creditCard" required="true"/>
+        </in-parameters>
+        <out-parameters>
+            <auto-parameters include="pk" required="true"/>
+            <parameter name="creditCard" required="true">
+                <auto-parameters entity-name="mantle.account.method.CreditCard"/></parameter>
+        </out-parameters>
+        <actions>
+            <entity-make-value entity-name="donation.Donation" value-field="donation"/>
+            <entity-set value-field="donation" include="all"/>
+            <if condition="!donation.donationId">
+                <entity-sequenced-id-primary value-field="donation"/>
+            </if>
+            <entity-create value-field="donation"/>
+        </actions>
+    </service>
+</services>
